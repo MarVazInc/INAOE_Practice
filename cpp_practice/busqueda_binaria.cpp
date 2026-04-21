@@ -64,10 +64,33 @@ void imprimir(int* arr, int size) {
     int* ptr = arr;
         // ptr es otro puntero que apunta al inicio del arreglo
         // es como una "copia" de la dirección base  {
+        // inicializa el arreglo 
     
     for (int i = 0; i < size; i++) {
         // seguimos usando i SOLO para controlar cuántas veces iteramos
         // PERO NO para acceder al arreglo
+
+        cout << *ptr << endl;
+        // *ptr → accede al valor en la dirección actual
+
+        ptr++;  
+        // avanza el puntero a la siguiente posición de memoria
+        // esto es equivalente a moverte al siguiente elemento del arregl
+    }
+}
+
+// --------------------------------------------------
+// FUNCIÓN: Imprimir SIN usar for (nivel bajo real) - while
+// --------------------------------------------------
+
+void imprimir2(int* arr, int size) {
+
+    int* ptr = arr;
+        // inicio de arreglo
+
+    while (ptr < arr + size) {
+        // mientras no llegues al final
+        //No recorres índices, recorres memoria
 
         cout << *ptr << endl;
         // *ptr → accede al valor en la dirección actual
@@ -100,6 +123,11 @@ int main() {
 
     cout << "Impresion del arreglo:" << endl; 
     imprimir(arr, size);
+    
+    cout << endl;
+
+    cout << "Impresion del arreglo2:" << endl; 
+    imprimir2(arr, size);
     
     cout << endl;
 
