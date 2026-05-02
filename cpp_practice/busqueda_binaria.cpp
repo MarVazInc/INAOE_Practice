@@ -1,148 +1,152 @@
 #include <iostream> 
-// Librería estándar para entrada/salida (imprimir en consola con cout)
+// Librería estándar para entrada/salida (cout, endl)
 
 using namespace std; 
-// Permite usar cout, endl, etc. sin escribir std::cout por ejemplo
+// Evita escribir std::cout cada vez
 
-// --------------------------------------------------
-// FUNCIÓN: Búsqueda binaria
-// --------------------------------------------------
+
+// ==================================================
+// FUNCIÓN: Búsqueda binaria (usa índices)
+// ==================================================
 
 int busqueda(int* arr, int size, int target) {
-    // arr → puntero (dirección del primer elemento del arreglo)
-    // size → tamaño del arreglo (se pasa manualmente)
-    // target → valor que queremos buscar
+    // arr → dirección base del arreglo
+    // size → número de elementos
+    // target → valor a buscar
 
     int left = 0;              
     int right = size - 1;      
-    // size - 1 porque los índices empiezan en 0
+    // right = último índice válido
 
     while (left <= right) {
-        // Mientras haya espacio de búsqueda
+        // Mientras exista un rango válido de búsqueda
 
         int mid = (left + right) / 2;  
-        // Punto medio del arreglo
+        // mid es un ÍNDICE, no un puntero
+        // Acceso equivalente:
+        // arr[mid]  <=>  *(arr + mid)
 
-        //if (arr[mid] == target) {
         if (*(arr + mid) == target) {
+            // Si el valor en la posición mid coincide
             return 1;  
-            // 1 = encontrado (true)
         }
         else if (*(arr + mid) < target) {
+            // Si el valor medio es menor, descarta la mitad izquierda
             left = mid + 1;
-            // Buscar en la mitad derecha
         }
         else {
+            // Si es mayor, descarta la mitad derecha
             right = mid - 1;
-            // Buscar en la mitad izquierda
         }
     }
 
     return 0;  
-    // 0 = no encontrado (false)
+    // No encontrado
 }
 
 
-// --------------------------------------------------
-// FUNCIÓN 2: Imprimir arreglo con punteros
-// --------------------------------------------------
 
-//void imprimir(int* arr, int size) {
-//    for (int i = 0; i < size; i++) {    // i =o inicializa en dirección base? i++ suma 1?
-//        cout << *(arr +i) << endl;
-//    }
-//}
+// ==================================================
+// FUNCIÓN 1: Imprimir usando índice (forma clásica)
+// ==================================================
+
+// Esta versión está comentada para comparar con la otra
+/*
+void imprimir(int* arr, int size) {
+    // Aquí SÍ usamos un índice i
+    // i NO es una dirección, es un contador
+
+    for (int i = 0; i < size; i++) {
+        // arr[i] significa:
+        // *(arr + i) → desplazamiento desde la dirección base
+
+        cout << *(arr + i) << endl;
+    }
+}
+*/
 
 
-// --------------------------------------------------
-// FUNCIÓN: Imprimir SIN usar índice (nivel bajo real)
-// --------------------------------------------------
-
+// ==================================================
+// FUNCIÓN 2: Imprimir usando puntero que avanza
+// ==================================================
 
 void imprimir(int* arr, int size) {
 
     int* ptr = arr;
-        // ptr es otro puntero que apunta al inicio del arreglo
-        // es como una "copia" de la dirección base  {
-        // inicializa el arreglo 
-    
+    // ptr apunta al inicio del arreglo
+    // ptr y arr contienen la MISMA dirección al inicio
+    // pero ptr SÍ lo vamos a mover
+
     for (int i = 0; i < size; i++) {
-        // seguimos usando i SOLO para controlar cuántas veces iteramos
-        // PERO NO para acceder al arreglo
+        // i solo controla cuántas veces iteramos
+        // NO se usa para acceder al arreglo
 
         cout << *ptr << endl;
-        // *ptr → accede al valor en la dirección actual
+        // *ptr → valor en la dirección actual
 
         ptr++;  
-        // avanza el puntero a la siguiente posición de memoria
-        // esto es equivalente a moverte al siguiente elemento del arregl
+        // ptr avanza al siguiente entero en memoria
+        // equivalente a arr[i+1]
     }
 }
 
-// --------------------------------------------------
-// FUNCIÓN: Imprimir SIN usar for (nivel bajo real) - while
-// --------------------------------------------------
+
+
+// ==================================================
+// FUNCIÓN 3: Imprimir sin índice (puntero puro)
+// ==================================================
 
 void imprimir2(int* arr, int size) {
 
     int* ptr = arr;
-        // inicio de arreglo
+    // ptr inicia en la dirección base
 
     while (ptr < arr + size) {
-        // mientras no llegues al final
-        //No recorres índices, recorres memoria
+        // arr + size = dirección justo DESPUÉS del último elemento
+        // condición 100% basada en direcciones, no en índices
 
         cout << *ptr << endl;
-        // *ptr → accede al valor en la dirección actual
+        // imprime el valor apuntado
 
         ptr++;  
-        // avanza el puntero a la siguiente posición de memoria
-        // esto es equivalente a moverte al siguiente elemento del arregl
+        // avanza al siguiente entero en memoria
     }
 }
 
 
 
-// --------------------------------------------------
-// FUNCIÓN PRINCIPAL (main)
-// --------------------------------------------------
-
-/*uso de memoria real (int arr[])
-paso por puntero (int* arr)
-control manual de tamaño
-implementación de algoritmo clásico en C++ */
+// ==================================================
+// FUNCIÓN PRINCIPAL
+// ==================================================
 
 int main() {
-    // Punto de entrada del programa
 
     int arr[] = {10,20,30,40,50};
-    // Arreglo de enteros (memoria contigua)
+    // Arreglo en memoria contigua
 
     int size = 5;
-    // Tamaño del arreglo (C++ no lo sabe automáticamente)
+    // C++ NO sabe el tamaño automáticamente al pasarlo a funciones
 
     cout << "Impresion del arreglo:" << endl; 
     imprimir(arr, size);
-    
+    // Usa puntero que avanza + for
+
     cout << endl;
 
     cout << "Impresion del arreglo2:" << endl; 
     imprimir2(arr, size);
-    
+    // Usa puntero que avanza + while
+
     cout << endl;
 
     int resultado1 = busqueda(arr, size, 4);
-    // Llamada a la función → busca 4
+    // Busca 4 → NO está en el arreglo
 
     int resultado2 = busqueda(arr, size, 10);
-    // Llamada a la función → busca 10
+    // Busca 10 → SÍ está (posición 0)
 
     cout << "Buscar 4: " << resultado1 << endl;
-    // cout → imprime en consola
-    // << → operador de inserción (envía datos a la salida)
-    // endl → salto de línea
-
     cout << "Buscar 10: " << resultado2 << endl;
+
     return 0;
-    // Indica que el programa terminó correctamente
 }
